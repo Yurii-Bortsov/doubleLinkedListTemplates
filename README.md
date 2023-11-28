@@ -1,2 +1,0 @@
-# doubleLinkedListTemplates
-# doubleLinkedListTemplates
