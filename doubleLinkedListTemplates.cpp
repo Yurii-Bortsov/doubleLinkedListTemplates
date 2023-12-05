@@ -37,8 +37,7 @@ Node<T>::Node(const T data, Node* next, Node* previous):data(data), next(next), 
 template <typename T>
 bool Node<T>::operator==(const Node &node)
 {
-    bool value = (data == node.data) * (next == node.next) * (previous == node.previous);
-    return value;
+    return (this->data == node.data);
 }
 
 template <typename T>
@@ -105,7 +104,7 @@ class List
          * @param list Список для сравнения
          * @return True, если списки равны, иначе false
          */
-        bool operator==(List<T> &list);
+        bool operator==(List<T> list);
 
         /**
          * @brief Перегружает оператор != для сравнения двух списков
@@ -282,7 +281,7 @@ void List<T>::DeleteAhead()
 }
 
 template <typename T>
-bool List<T>::operator==(List<T> &list)
+bool List<T>::operator==(List<T> list)
 {
     return (toString() == list.toString());
 }
@@ -315,24 +314,15 @@ List<T>::List(const List<T> &other) : head(nullptr), tail(nullptr)
 template <typename T>
 List<T> &List<T>::operator=(const List<T> &other)
 {
-    if (this != &other)
-    {
-        clear();
-        Node<T> *temp = other.head;
-        while (temp != nullptr)
-        {
-            this->PushBack(temp->data);
-            temp = temp->previous;
-        }
-    }
+    List<T> temp(other);
+    std::swap(this->head, temp.head);
     return *this;
 }
 
 template <typename T>
 List<T>::List(List<T> &&other) noexcept : head(other.head), tail(other.tail)
 {
-    other.head = nullptr;
-    other.tail = nullptr;
+    *this = std::move(other);       
 }
 
 template <typename T>
@@ -340,11 +330,8 @@ List<T> &List<T>::operator=(List<T> &&other) noexcept
 {
     if (this != &other)
     {
-        clear();
-        head = other.head;
-        tail = other.tail;
-        other.head = nullptr;
-        other.tail = nullptr;
+        std::swap(this->head, other.head);
+        std::swap(this->tail, other.tail);
     }
     return *this;
 }
